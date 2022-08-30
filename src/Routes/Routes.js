@@ -10,4 +10,5 @@ export const publicRoutes = [
     {exact: true, path:"/auth", element:<Auth/>},
     {exact: true, path:'/register', element:<Register/>},
     {exact: true, path:'/forgot-password', element:<ForgotPassword/>},
+    {exact: true, path:'*', element:<Auth/>},
 ]

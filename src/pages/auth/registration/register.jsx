@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useMemo} from 'react';
 import cx from "../auth.module.scss";
 import Card from "react-bootstrap/Card";
 import Form from "react-bootstrap/Form";
@@ -8,6 +8,19 @@ import RegisterConfirmation from "./registerConfirmation";
 
 const Register = () => {
     const [confirmation, setConfirmation] = useState(false)
+    const [login, setLogin] = useState('')
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+    const [repeatPassword, setRepeatPassword] = useState('')
+    const [disabled, setDisabled] = useState(false)
+
+    useMemo(() => {
+        if (login === '' || email === '' || password === '' || repeatPassword === '' ) {
+            setDisabled(true)
+        } else {
+            setDisabled(false)
+        }
+    }, [login, email, password, repeatPassword])
 
     return (
         <div>
@@ -20,12 +33,16 @@ const Register = () => {
                                 <Card.Body className={cx.cardBody}>
                                     <Form.Group className={cx.formGroup}>
                                         <Form.Control
+                                            value={login}
+                                            onChange={e=> setLogin(e.target.value)}
                                             type="text"
                                             placeholder="Логин"
                                         />
                                     </Form.Group>
                                     <Form.Group className={cx.formGroup}>
                                         <Form.Control
+                                            value={email}
+                                            onChange={e=> setEmail(e.target.value)}
                                             type="email"
                                             placeholder="Почта"
                                             className={cx.form2}
@@ -33,12 +50,16 @@ const Register = () => {
                                     </Form.Group>
                                     <Form.Group className={cx.formGroup}>
                                         <Form.Control
+                                            value={password}
+                                            onChange={e=> setPassword(e.target.value)}
                                             type="password"
                                             placeholder="Пароль"
                                         />
                                     </Form.Group>
                                     <Form.Group className={cx.formGroup}>
                                         <Form.Control
+                                            value={repeatPassword}
+                                            onChange={e=> setRepeatPassword(e.target.value)}
                                             type="password"
                                             placeholder="Повторить пароль"
                                             className={cx.form2}
@@ -49,6 +70,7 @@ const Register = () => {
                                             onClick={() => setConfirmation(true)}
                                             className={cx.button}
                                             variant="secondary"
+                                            disabled={disabled}
                                         >
                                             Продолжить
                                         </Button>{' '}

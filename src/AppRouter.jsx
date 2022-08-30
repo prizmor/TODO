@@ -1,8 +1,9 @@
 import React from "react";
-import {Routes, Route,} from "react-router-dom";
+import {Routes, Route, Redirect} from "react-router-dom";
 import {publicRoutes} from "./Routes/Routes";
 
 const AppRouter = () => {
+
     return (
         <div>
             <Routes>
