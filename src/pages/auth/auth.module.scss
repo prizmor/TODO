@@ -1,0 +1,62 @@
+.container {
+  width: 350px;
+}
+
+.card {
+  border: none;
+  background: #F8F9FA;
+  border-radius: 4px;
+}
+
+.button {
+  margin-bottom: 14px;
+  width: 100%;
+}
+
+.formGroup {
+  margin-bottom: 24px;
+}
+
+.cardBody {
+  padding: 24px;
+}
+
+.cardHeader {
+  padding: 13px 24px;
+}
+
+.linkButton {
+  display: block;
+  width: 100%;
+}
+
+.link {
+  font-size: 16px;
+  line-height: 19px;
+  text-decoration: none;
+  color: #ADB5BD;
+  transition: all 0.2s ease-out;
+}
+
+.link:hover {
+  color: #6e6e70;
+  transition: all 0.2s ease-in-out;
+}
+
+.form2 {
+  margin-bottom: 12px;
+}
+
+.wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
+}
+
+.buttonsBlock {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+}
