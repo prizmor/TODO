@@ -2,6 +2,9 @@ import React, {useMemo, useState} from 'react';
 import Card from 'react-bootstrap/Card';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
+import Api from '../../api/index';
+
+
 
 import cx from "./auth.module.scss"
 import {Link} from "react-router-dom";
@@ -19,6 +22,20 @@ const Auth = () => {
             setDisabled(false)
         }
     }, [password, login])
+
+
+    const auth = async () => {
+        if (!disabled)
+        {
+            try{
+                const res = await Api.Auth.Login(login, password);
+                console.log("ok");
+            }
+            catch(e){
+                console.log("err");
+            }
+        }
+    }
 
     return (
         <div className={cx.wrapper}>
@@ -53,6 +70,7 @@ const Auth = () => {
                                 disabled={disabled}
                                 className={cx.button}
                                 variant="secondary"
+                                onClick={auth}
                             >
                                 Войти
                             </Button>{' '}

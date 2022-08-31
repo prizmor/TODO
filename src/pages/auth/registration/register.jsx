@@ -5,6 +5,7 @@ import Form from "react-bootstrap/Form";
 import {Link} from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import RegisterConfirmation from "./registerConfirmation";
+import Api from '../../../api/index';
 
 const Register = () => {
     const [confirmation, setConfirmation] = useState(false)
@@ -21,6 +22,20 @@ const Register = () => {
             setDisabled(false)
         }
     }, [login, email, password, repeatPassword])
+
+
+    const register = async () => {
+        if (!disabled)
+        {
+            try{
+                const res = await Api.Auth.Register(login, password, email);
+                console.log("ok");
+            }
+            catch(e){
+                console.log("err");
+            }
+        }
+    }
 
     return (
         <div>
@@ -67,7 +82,10 @@ const Register = () => {
                                     </Form.Group>
                                     <div className={cx.buttonsBlock}>
                                         <Button
-                                            onClick={() => setConfirmation(true)}
+                                                onClick={() => {
+                                                    //setConfirmation(true)
+                                                    register();
+                                                }}
                                             className={cx.button}
                                             variant="secondary"
                                             disabled={disabled}
