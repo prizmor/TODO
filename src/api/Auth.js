@@ -4,11 +4,11 @@ class Auth
 {
     async Login(login, password)
     {
-        let res = axios.post("http://localhost:3222/api/auth/login", {
+        return axios.post("http://localhost:3222/api/auth/login", {
             login,
             password
         })
-        return res;
+        
     }
 
     async Register(login, password, email)
@@ -21,6 +21,7 @@ class Auth
 
         return res;
     }
+
 }
 
 module.exports = new Auth();

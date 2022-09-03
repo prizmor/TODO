@@ -3,11 +3,13 @@ import Card from 'react-bootstrap/Card';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Api from '../../api/index';
+import { useDispatch } from 'react-redux';
 
-
+import { connect } from '../../ws';
 import cx from "./auth.module.scss"
 import {Link} from "react-router-dom";
 import FormError from "../../ui/formError/FormError";
+import { AuthThunk, isLogin } from '../../redux/reducers/authReducer';
 
 const Auth = () => {
 
@@ -18,6 +20,8 @@ const Auth = () => {
     const [passwordDirty, setPasswordDirty] = useState(false)
     const [passwordError, setPasswordError] = useState("")
     const [validForm, setValidForm] = useState(false)
+
+    const dispatch = useDispatch();
 
 
     useEffect(() => {
@@ -82,8 +86,7 @@ const Auth = () => {
     const auth = async () => {
         if (validForm) {
             try {
-                const res = await Api.Auth.Login(login, password);
-                console.log("ok");
+                dispatch(AuthThunk(login, password));
             } catch (e) {
                 console.log("err");
             }
