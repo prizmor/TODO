@@ -1,22 +1,46 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import cx from "../auth.module.scss";
 import Card from "react-bootstrap/Card";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
-import {useMemo, useState} from "react";
+import FormError from "../../../ui/formError/FormError";
 
 const RegisterConfirmation = ({setConfirmation}) => {
 
-    const [code, setCode] = useState('')
-    const [disabled, setDisabled] = useState(false)
+    const [code, setCode] = useState("")
+    const [codeDirty, setCodeDirty] = useState(false)
+    const [codeError, setCodeError] = useState("")
+    const [validForm, setValidForm] = useState(false)
 
-    useMemo(() => {
-        if (code === '') {
-            setDisabled(true)
+    useEffect(() => {
+        if (!code || codeError) {
+            setValidForm(false)
         } else {
-            setDisabled(false)
+            setValidForm(true)
         }
-    }, [code])
+    }, [code, codeError])
+
+    const blurHandler = () => {
+        setCodeDirty(true)
+        if (!code) {
+            setCodeError("Введите код")
+        }
+    }
+
+    const codeHandler = (e) => {
+        setCode(e.target.value)
+        if (e.target.value === "") {
+            setCodeError("Введите код")
+        } else {
+            setCodeError("")
+        }
+    }
+
+    const onButtonClick = () => {
+        if (!code) {
+            setCodeError("Введите код")
+        }
+    }
 
     return (
         <div>
@@ -27,22 +51,28 @@ const RegisterConfirmation = ({setConfirmation}) => {
                         <Card.Body className={cx.cardBody}>
                             <Form.Group className={cx.formGroup}>
                                 <Form.Control
+                                    onBlur={blurHandler}
                                     value={code}
-                                    onChange={e=> setCode(e.target.value)}
+                                    onInput={e => codeHandler(e)}
                                     type="text"
                                     placeholder="Код с почты"
                                 />
+                                {codeDirty ? (codeDirty && codeError) && <FormError error={codeError}/>
+                                    : (codeError) && <FormError error={codeError}/>
+                                }
                             </Form.Group>
                             <div className={cx.buttonsBlock}>
-                                <Button className={cx.button}
-                                        disabled={disabled} variant="secondary">Подтвердить</Button>{' '}
-                                <Button
-                                    onClick={()=> setConfirmation(false)}
-                                    className={cx.button}
-                                    variant="secondary"
-                                >
-                                    Назад
-                                </Button>{' '}
+                                <div onClick={onButtonClick}>
+                                    <Button className={cx.button}
+                                            disabled={!validForm} variant="secondary">Подтвердить</Button>{' '}
+                                    <Button
+                                        onClick={() => setConfirmation(false)}
+                                        className={cx.button}
+                                        variant="secondary"
+                                    >
+                                        Назад
+                                    </Button>{' '}
+                                </div>
                             </div>
                         </Card.Body>
                     </Card>

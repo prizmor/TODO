@@ -1,4 +1,4 @@
-import React, {useState, useMemo, useRef, useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import cx from "../auth.module.scss";
 import Card from "react-bootstrap/Card";
 import Form from "react-bootstrap/Form";
@@ -6,43 +6,77 @@ import {Link} from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import RegisterConfirmation from "./registerConfirmation";
 import Api from '../../../api/index';
+import FormError from "../../../ui/formError/FormError";
 
 const Register = () => {
     const [confirmation, setConfirmation] = useState(false)
     const [login, setLogin] = useState("")
-    const [loginError, setLoginError] = useState("Введите логин")
+    const [loginError, setLoginError] = useState("")
     const [loginDirty, setLoginDirty] = useState(false)
     const [email, setEmail] = useState("")
-    const [emailError, setEmailError] = useState("Введите email")
+    const [emailError, setEmailError] = useState("")
     const [emailDirty, setEmailDirty] = useState(false)
     const [password, setPassword] = useState("")
-    const [passwordError, setPasswordError] = useState("Введите пароль")
+    const [passwordError, setPasswordError] = useState("")
     const [passwordDirty, setPasswordDirty] = useState(false)
     const [repeatPassword, setRepeatPassword] = useState("")
-    const [repeatPasswordError, setRepeatPasswordError] = useState("Введите пароль")
+    const [repeatPasswordError, setRepeatPasswordError] = useState("")
     const [repeatPasswordDirty, setRepeatPasswordDirty] = useState(false)
     const [validForm, setValidForm] = useState(false)
 
-    const passwordRef = useRef()
+    useEffect(() => {
+        if (loginError || emailError || passwordError || repeatPasswordError || !login || !email || !password ) {
+            setValidForm(false)
+        } else {
+            setValidForm(true)
+        }
+    }, [loginError, emailError, passwordError, repeatPasswordError, login, email, password])
 
     const blurHandler = (e) => {
         switch (e.target.name) {
             case "login" : {
                 setLoginDirty(true)
+                if (!login) {
+                    setLoginError("Введите логин")
+                }
                 break
             }
             case "email" : {
                 setEmailDirty(true)
+                if (!email) {
+                    setEmailError("Введите email")
+                }
                 break
             }
             case "password" : {
                 setPasswordDirty(true)
+                if (!login) {
+                    setPasswordError("Введите пароль")
+                }
                 break
             }
             case "repeatPassword" : {
                 setRepeatPasswordDirty(true)
+                if (!email) {
+                    setRepeatPasswordError("Введите пароль")
+                }
                 break
             }
+        }
+    }
+
+    const onButtonClick = () => {
+        if (!login) {
+            setLoginError("Введите логин")
+        }
+        if (!email) {
+            setEmailError("Введите email")
+        }
+        if (!password) {
+            setPasswordError("Введите пароль")
+        }
+        if (!repeatPassword) {
+            setRepeatPasswordError("Введите пароль")
         }
     }
 
@@ -54,6 +88,7 @@ const Register = () => {
             setLoginError("Введите логин")
         }
     }
+
     const emailHandler = (e) => {
         setEmail(e.target.value)
         const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}])|(([a-zA-Z\-\d]+\.)+[a-zA-Z]{2,}))$/
@@ -92,21 +127,10 @@ const Register = () => {
         }
         if (e.target.value !== password) {
             setRepeatPasswordError("Пароли не совпадают")
-        }
-        else {
+        } else {
             setRepeatPasswordError("")
         }
     }
-
-
-    useEffect(() => {
-        if (loginError|| emailError || passwordError || repeatPasswordError) {
-            setValidForm(false)
-        } else {
-            setValidForm(true)
-        }
-    }, [loginError, emailError, passwordError, repeatPasswordError])
-
 
     const register = async () => {
         if (validForm) {
@@ -130,7 +154,6 @@ const Register = () => {
                                 <Card.Header className={cx.cardHeader}>Регистрация</Card.Header>
                                 <Card.Body className={cx.cardBody}>
                                     <Form.Group className={cx.formGroup}>
-                                        {(loginDirty && loginError) && <div>{loginError}</div>}
                                         <Form.Control
                                             onBlur={e => blurHandler(e)}
                                             name="login"
@@ -139,9 +162,11 @@ const Register = () => {
                                             type="text"
                                             placeholder="Логин"
                                         />
+                                        {loginDirty ? (loginDirty && loginError) && <FormError error={loginError}/>
+                                            : (loginError) && <FormError error={loginError}/>
+                                        }
                                     </Form.Group>
                                     <Form.Group className={cx.formGroup}>
-                                        {(emailDirty && emailError) && <div>{emailError}</div>}
                                         <Form.Control
                                             onBlur={e => blurHandler(e)}
                                             name="email"
@@ -151,21 +176,25 @@ const Register = () => {
                                             placeholder="Почта"
                                             className={cx.form2}
                                         />
+                                        {emailDirty ? (emailDirty && emailError) && <FormError error={emailError}/>
+                                            : (emailError) && <FormError error={emailError}/>
+                                        }
                                     </Form.Group>
                                     <Form.Group className={cx.formGroup}>
-                                        {(passwordDirty && passwordError) && <div>{passwordError}</div>}
                                         <Form.Control
                                             onBlur={e => blurHandler(e)}
                                             name="password"
-                                            ref={passwordRef}
                                             value={password}
                                             onInput={e => passwordHandler(e)}
                                             type="password"
                                             placeholder="Пароль"
                                         />
+                                        {passwordDirty ? (passwordDirty && passwordError) &&
+                                            <FormError error={passwordError}/>
+                                            : (passwordError) && <FormError error={passwordError}/>
+                                        }
                                     </Form.Group>
                                     <Form.Group className={cx.formGroup}>
-                                        {(repeatPasswordDirty && repeatPasswordError) && <div>{repeatPasswordError}</div>}
                                         <Form.Control
                                             onBlur={e => blurHandler(e)}
                                             name="repeatPassword"
@@ -175,19 +204,26 @@ const Register = () => {
                                             placeholder="Повторить пароль"
                                             className={cx.form2}
                                         />
+                                        {repeatPasswordDirty
+                                            ? (repeatPasswordDirty && repeatPasswordError)
+                                            && <FormError error={repeatPasswordError}/>
+                                            : (repeatPasswordError) && <FormError error={repeatPasswordError}/>
+                                        }
                                     </Form.Group>
                                     <div className={cx.buttonsBlock}>
-                                        <Button
-                                            onClick={() => {
-                                                //setConfirmation(true)
-                                                register();
-                                            }}
-                                            className={cx.button}
-                                            variant="secondary"
-                                            disabled={!validForm}
-                                        >
-                                            Продолжить
-                                        </Button>{' '}
+                                        <div onClick={onButtonClick}>
+                                            <Button
+                                                onClick={() => {
+                                                    setConfirmation(true)
+                                                    register();
+                                                }}
+                                                className={cx.button}
+                                                variant="secondary"
+                                                disabled={!validForm}
+                                            >
+                                                Регистрация
+                                            </Button>{' '}
+                                        </div>
                                         <Form.Text className="text-muted text-center">
                                             <Link className={cx.link} to={"/auth"}>
                                                 Войти

@@ -5,30 +5,43 @@ import Form from "react-bootstrap/Form";
 import {Link} from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import ConfirmationPassword from "./confirmationPassword";
+import FormError from "../../../ui/formError/FormError";
 
 const ForgotPassword = () => {
 
     const [confirmation, setConfirmation] = useState(false)
-    const [login, setLogin] = useState('')
+    const [login, setLogin] = useState("")
     const [loginDirty, setLoginDirty] = useState(false)
-    const [loginError, setLoginError] = useState('Введите логин')
+    const [loginError, setLoginError] = useState("")
     const [validForm, setValidForm] = useState(false)
 
     useEffect(() => {
-        if (loginError) {
+        if (loginError || !login) {
             setValidForm(false)
         } else {
             setValidForm(true)
         }
-    }, [loginError])
+    }, [loginError, login])
 
+    const blurHandler = () => {
+        setLoginDirty(true)
+        if (!login) {
+            setLoginError("Введите логин")
+        }
+    }
 
     const loginHandler = (e) => {
         setLogin(e.target.value)
-        if (e.target.value === '') {
-            setLoginError('Введите логин')
+        if (e.target.value === "") {
+            setLoginError("Введите логин")
         } else {
-            setLoginError('')
+            setLoginError("")
+        }
+    }
+
+    const onButtonClick = () => {
+        if (!login) {
+            setLoginError("Введите логин")
         }
     }
 
@@ -41,26 +54,29 @@ const ForgotPassword = () => {
                             <Card className={cx.card}>
                                 <Card.Header className={cx.cardHeader}>Забыл пароль</Card.Header>
                                 <Card.Body className={cx.cardBody}>
-                                    {(loginDirty && loginError) && <div>{loginError}</div>}
                                     <Form.Group className={cx.formGroup}>
                                         <Form.Control
-                                            onBlur={ () => setLoginDirty(true)}
+                                            onBlur={blurHandler}
                                             value={login}
                                             onChange={e => loginHandler(e)}
                                             type="text"
                                             placeholder="Логин"
                                         />
+                                        { loginDirty ? (loginDirty && loginError) && <FormError error={loginError}/>
+                                            : (loginError) && <FormError error={loginError}/>
+                                        }
                                     </Form.Group>
                                     <div className={cx.buttonsBlock}>
-
-                                        <Button
-                                            disabled={!validForm}
-                                            onClick={() => setConfirmation(true)}
-                                            className={cx.button}
-                                            variant="secondary"
-                                        >
-                                            Отправить письмо на почту
-                                        </Button>{' '}
+                                        <div onClick={onButtonClick}>
+                                            <Button
+                                                disabled={!validForm}
+                                                onClick={() => setConfirmation(true)}
+                                                className={cx.button}
+                                                variant="secondary"
+                                            >
+                                                Отправить письмо на почту
+                                            </Button>{' '}
+                                        </div>
                                         <Link className={cx.link} to={"/auth"}>
                                             <Button
                                                 className={cx.button}
